@@ -1,0 +1,62 @@
+# Wakeword Detection ASR Engine Configuration
+# 唤醒词检测引擎配置文件
+# 基于FunASR流式识别，实现实时唤醒词检测功能
+
+NAME: wakeword
+VERSION: "v0.0.1"
+DESC: "唤醒词检测引擎 - 实时检测音频中的唤醒词"
+
+META: {
+  official: "https://github.com/modelscope/FunASR",
+  tips: "基于FunASR流式识别实现，支持自定义唤醒词列表，实时检测音频中的唤醒词",
+  fee: "free",
+  infer_type: "stream",
+  features: [
+    "支持多个唤醒词检测",
+    "实时流式识别",
+    "热词增强识别准确率",
+    "自定义唤醒词列表"
+  ]
+}
+
+# 引擎运行参数配置
+PARAMETERS: [
+  {
+    name: "api_url",
+    description: "FunASR流式识别服务地址",
+    type: "string",
+    required: false,
+    choices: [],
+    default: "ws://localhost:10095"
+  },
+  {
+    name: "mode",
+    description: "识别模式：2pass为两遍识别（推荐，准确率高）",
+    type: "string",
+    required: false,
+    choices: ["2pass"],
+    default: "2pass"
+  },
+  {
+    name: "wakewords",
+    description: "唤醒词列表，多个唤醒词用逗号分隔，例如：'你好小助手,嘿Siri,小爱同学'",
+    type: "string",
+    required: false,
+    choices: [],
+    default: "你好小助手"
+  },
+  {
+    name: "sensitivity",
+    description: "检测灵敏度（预留参数，0.0-1.0，数值越高越敏感）",
+    type: "float",
+    required: false,
+    range: [0.0, 1.0],
+    default: 0.5
+  }
+]
+
+# 自定义配置（引擎内部使用）
+CUSTOM: {
+  # 默认唤醒词列表（逗号分隔）
+  wakewords: "你好小助手,小助手,唤醒"
+}

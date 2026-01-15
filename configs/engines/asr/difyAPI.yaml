@@ -1,0 +1,37 @@
+NAME: "Dify"
+VERSION: "v0.0.1"
+DESC: "接入Dify应用"
+META: {
+  official: "https://dify.ai/",
+  configuration: "https://mp.weixin.qq.com/s/YXyHYN1dC_nJAOCco7ZJjg",
+  tips: "支持本地部署的Dify应用，非流式识别，不支持唤醒词检测",
+  fee: "free",
+  infer_type: "normal"
+}
+# 暴露给前端的参数选项以及默认值
+PARAMETERS: [
+  {
+    name: "api_server",
+    description: "Dify API Server.",
+    type: "string",
+    required: false,
+    choices: [],
+    default: ""
+  },
+  {
+    name: "api_key",
+    description: "Dify API Key.",
+    type: "string",
+    required: false,
+    choices: [],
+    default: ""
+  },
+  {
+    name: "username",
+    description: "Dify Username.",
+    type: "string",
+    required: false,
+    choices: [],
+    default: ""
+  }
+]
