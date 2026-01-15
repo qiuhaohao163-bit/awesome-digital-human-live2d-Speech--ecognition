@@ -137,7 +137,7 @@
           "startListening": "开始监听",
           "stopListening": "停止监听",
           "status": "状态",
-          "wakewordDetected": "🎯 已唤醒",
+          "wakewordDetected": "🎯 已唤醒 - 进入对话模式",
           "listening": "🎹 监听中",
           "stopped": "⛸️ 未启动",
           "recognizing": "识别中",
@@ -146,7 +146,7 @@
           "tip1": "选择支持流式识别的 ASR 引擎（如 FunASR Streaming）",
           "tip2": "配置引擎参数，确保服务地址正确",
           "tip3": "使用 3-5 个字的短语作为唤醒词，避免常用词",
-          "tip4": "选择发音清晰、区分度高的词语"
+          "tip4": "检测到唤醒词后将自动切换到沉浸对话模式"
         }
       },
       "gallery": {

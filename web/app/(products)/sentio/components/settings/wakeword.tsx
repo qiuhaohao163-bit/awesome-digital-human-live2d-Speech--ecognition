@@ -18,8 +18,8 @@ import {
     api_asr_get_list, 
     api_asr_get_config 
 } from '@/lib/api/server';
-import { EngineParamDesc, EngineDesc, IFER_TYPE } from '@/lib/protocol';
-import { useSentioWakewordStore } from "@/lib/store/sentio";
+import { EngineParamDesc, EngineDesc, IFER_TYPE, CHAT_MODE } from '@/lib/protocol';
+import { useSentioWakewordStore, useSentioChatModeStore } from "@/lib/store/sentio";
 import { InfoTip } from "@/components/tips/info";
 import { ParamsLoading, ParamsList } from "./params";
 import { createASRWebsocketClient, WS_RECV_ACTION_TYPE, WS_SEND_ACTION_TYPE } from '@/lib/api/websocket';
@@ -91,6 +91,9 @@ export const WakewordTab = memo(() => {
         setIsListening,
         setLastDetectedText
     } = useSentioWakewordStore();
+    
+    // 导入聊天模式 store
+    const { chatMode, setChatMode } = useSentioChatModeStore();
 
     const [isWakewordDetected, setIsWakewordDetected] = useState(false);
     const [partialText, setPartialText] = useState("");
@@ -171,6 +174,32 @@ export const WakewordTab = memo(() => {
         return wakewordList.some(word => text.includes(word));
     };
 
+    // 唤醒词检测成功后的处理逻辑
+    const onWakewordDetected = (detectedText: string) => {
+        console.log("✅ 检测到唤醒词:", detectedText);
+        
+        // 1. 设置检测到状态
+        setIsWakewordDetected(true);
+        setLastDetectedText(detectedText);
+        
+        // 2. 切换到沉浸模式（对话模式）
+        if (chatMode !== CHAT_MODE.IMMSERSIVE) {
+            console.log("切换到沉浸模式");
+            setChatMode(CHAT_MODE.IMMSERSIVE);
+        }
+        
+        // 3. 停止唤醒词监听（可选，如果你希望唤醒后继续监听则注释掉）
+        // setTimeout(() => {
+        //     stopListening();
+        // }, 1000);
+        
+        // 4. 3秒后恢复状态
+        setTimeout(() => setIsWakewordDetected(false), 3000);
+        
+        // 5. 可以在这里添加语音提示反馈（可选）
+        // 例如: 播放一个提示音或语音 "我在"、"有什么可以帮您" 等
+    };
+
     const startListening = async () => {
         try {
             if (!asrEngine || !engineList.current[asrEngine]) {
@@ -189,9 +218,7 @@ export const WakewordTab = memo(() => {
                         setPartialText(text);
                         
                         if (checkWakeword(text)) {
-                            setIsWakewordDetected(true);
-                            setLastDetectedText(text);
-                            setTimeout(() => setIsWakewordDetected(false), 3000);
+                            onWakewordDetected(text);
                         }
                     } else if (action === WS_RECV_ACTION_TYPE.ENGINE_FINAL_OUTPUT) {
                         const finalText = decoder.decode(data);
@@ -199,8 +226,7 @@ export const WakewordTab = memo(() => {
                         setPartialText("");
                         
                         if (checkWakeword(finalText)) {
-                            setIsWakewordDetected(true);
-                            setTimeout(() => setIsWakewordDetected(false), 3000);
+                            onWakewordDetected(finalText);
                         }
                     } else if (action === WS_RECV_ACTION_TYPE.ERROR) {
                         const errorMsg = decoder.decode(data);
